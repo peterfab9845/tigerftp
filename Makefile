@@ -8,7 +8,7 @@ SERVER_BIN = $(SERVER_DIR)TigerS
 
 CLIENT_SRC = $(SRC_DIR)client.c
 CLIENT_H = $(SRC_DIR)client.h
-CLIENT_DIR = client
+CLIENT_DIR = client/
 CLIENT_BIN = $(CLIENT_DIR)TigerC
 
 COMMON_H = $(SRC_DIR)common.h
