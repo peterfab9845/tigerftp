@@ -118,6 +118,9 @@ int main(void) {
       }
 
       err = do_get(sockfd, filename);
+      if (err) {
+        printf("Unable to complete get request.\n");
+      }
 
     // **** tput command
     } else if (cmd == TPUT) {
@@ -127,6 +130,9 @@ int main(void) {
       }
 
       err = do_put(sockfd, filename);
+      if (err) {
+        printf("Unable to complete put request.\n");
+      }
 
     // **** exit command
     } else if (cmd == EXIT) {
@@ -260,15 +266,48 @@ int do_auth(int sockfd, char *user, char *pass) {
 // return: put result
 // filename: the filename to get from the server
 int do_get(int sockfd, char *filename) {
-  printf("tget filename: %s\n", filename);
+  struct ftp_file_request req = {0};
+  req.type = htonl(GET);
+  req.filename_len = htonl(strlen(filename));
+
+  int err = send_all(sockfd, &req, sizeof(req));
+  if (err == -1) {
+    fprintf(stderr, "Error sending get request.\n");
+    return -1;
+  }
+
+  err = send_all(sockfd, filename, strlen(filename));
+  if (err == -1) {
+    fprintf(stderr, "Error sending get filename.\n");
+    return -1;
+  }
+
+  char buf[512];
+
   return 0;
 }
 
 // send a put request to the server
-// return: get result
+// return: put result
 // filename: the filename to upload to the server
 int do_put(int sockfd, char *filename) {
-  printf("tput filename: %s\n", filename);
+  struct ftp_file_request req = {0};
+  req.type = htonl(PUT);
+  req.filename_len = htonl(strlen(filename));
+
+  int err = send_all(sockfd, &req, sizeof(req));
+  if (err == -1) {
+    fprintf(stderr, "Error sending put request.\n");
+    return -1;
+  }
+
+  err = send_all(sockfd, filename, strlen(filename));
+  if (err == -1) {
+    fprintf(stderr, "Error sending put filename.\n");
+    return -1;
+  }
+
+  char buf[512];
 
   return 0;
 }

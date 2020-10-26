@@ -69,7 +69,7 @@ int main(void) {
   // accept connections and handle the work for each one
   for (;;) {
     int connfd = accept(listenfd, NULL, NULL); // don't care about their address
-    printf("Accepted connection.\n");
+    printf("Connection opened.\n");
 
     // create a thread for this connection
     pthread_t thread;
@@ -94,18 +94,19 @@ void *handle_client(void *arg) {
   ssize_t received = recv(connfd, &auth_req, sizeof(auth_req), MSG_WAITALL);
   if (received == 0) {
     fprintf(stderr, "Connection closed.\n");
+    close_conn(connfd);
     return (void *)-1;
   } else if (received == -1) {
     fprintf(stderr, "recv: %s\n", strerror(errno));
+    close_conn(connfd);
     return (void *)-1;
   } else if ((size_t) received < sizeof(auth_req)) {
     fprintf(stderr, "Not enough data received for authentication request.\n");
+    close_conn(connfd);
     return (void *)-1;
   }
 
   auth_req.type = ntohl(auth_req.type);
-  auth_req.username_len = ntohl(auth_req.username_len);
-  auth_req.password_len = ntohl(auth_req.password_len);
 
   // check request type
   if (auth_req.type != AUTH_REQ) {
@@ -115,6 +116,9 @@ void *handle_client(void *arg) {
       fprintf(stderr, "Error closing connection.\n");
     }
   }
+
+  auth_req.username_len = ntohl(auth_req.username_len);
+  auth_req.password_len = ntohl(auth_req.password_len);
 
   // make space for and receive the username
   char *username = malloc(auth_req.username_len + 1);
@@ -127,12 +131,15 @@ void *handle_client(void *arg) {
   received = recv(connfd, username, auth_req.username_len, MSG_WAITALL);
   if (received == 0) {
     fprintf(stderr, "Connection closed during receive of username.\n");
+    close_conn(connfd);
     return (void *)-1;
   } else if (received == -1) {
     fprintf(stderr, "recv: %s\n", strerror(errno));
+    close_conn(connfd);
     return (void *)-1;
   } else if ((size_t) received < auth_req.username_len) {
     fprintf(stderr, "Not enough data received for username.\n");
+    close_conn(connfd);
     return (void *)-1;
   }
 
@@ -145,23 +152,26 @@ void *handle_client(void *arg) {
   received = recv(connfd, password, auth_req.password_len, MSG_WAITALL);
   if (received == 0) {
     fprintf(stderr, "Connection closed during receive of password.\n");
+    close_conn(connfd);
     return (void *)-1;
   } else if (received == -1) {
     fprintf(stderr, "recv: %s\n", strerror(errno));
+    close_conn(connfd);
     return (void *)-1;
   } else if ((size_t) received < auth_req.password_len) {
     fprintf(stderr, "Not enough data received for password.\n");
+    close_conn(connfd);
     return (void *)-1;
   }
 
   int auth_result = check_auth(username, password);
-  free(username);
-  free(password);
   if (auth_result == 1) {
     // good password, send the acknowledge with success
     struct ftp_auth_response resp = {0};
     resp.type = htonl(AUTH_RESP);
     resp.result = htonl(SUCCESS);
+
+    printf("Successful login by: %s\n", username);
 
     int err = send_all(connfd, &resp, sizeof(resp));
     if (err == -1) {
@@ -169,7 +179,9 @@ void *handle_client(void *arg) {
     }
   } else if (auth_result == 0) {
     // bad password, deny and close
+    printf("Bad password provided by: %s\n", username);
     deny_auth(connfd);
+    return (void *) 0;
   } else {
     // error
     struct ftp_auth_response resp = {0};
@@ -181,14 +193,81 @@ void *handle_client(void *arg) {
       fprintf(stderr, "Error sending auth response.\n");
     }
   }
+  free(username);
+  free(password);
 
   // process user requests
   for (;;) {
-    struct ftp_file_request req = {0};
-    //get, put, end
+    struct ftp_file_request file_req = {0};
 
+    received = recv(connfd, &file_req, sizeof(file_req), MSG_WAITALL);
+    if (received == 0) {
+      fprintf(stderr, "Connection closed.\n");
+      close_conn(connfd);
+      return (void *)-1;
+    } else if (received == -1) {
+      fprintf(stderr, "recv: %s\n", strerror(errno));
+      close_conn(connfd);
+      return (void *)-1;
+    } else if ((size_t) received < sizeof(file_req)) {
+      fprintf(stderr, "Not enough data received for file request.\n");
+      close_conn(connfd);
+      return (void *)-1;
+    }
 
-  return 0;
+    file_req.type = ntohl(file_req.type);
+    // if it is an END request, nothing more to read. Close connection.
+    if (file_req.type == END) {
+      err = close_conn(connfd);
+      if (err) {
+        fprintf(stderr, "Error closing connection.\n");
+        return (void *) -1;
+      }
+      printf("Connection closed.\n");
+      return (void *) 0;
+    } else if (file_req.type != GET && file_req.type != PUT) {
+      // unknown request type
+      fprintf(stderr, "Sequence error: expected GET, PUT, or END\n");
+      err = close_conn(connfd);
+      if (err) {
+        fprintf(stderr, "Error closing connection.\n");
+      }
+    }
+
+    // otherwise, it's a GET or PUT. Get the filename.
+    file_req.filename_len = ntohl(file_req.filename_len);
+
+    char *filename = malloc(file_req.filename_len + 1);
+    filename[file_req.filename_len] = '\0';
+
+    received = recv(connfd, filename, file_req.filename_len, MSG_WAITALL);
+    if (received == 0) {
+      fprintf(stderr, "Connection closed.\n");
+      close_conn(connfd);
+      return (void *)-1;
+    } else if (received == -1) {
+      fprintf(stderr, "recv: %s\n", strerror(errno));
+      close_conn(connfd);
+      return (void *)-1;
+    } else if ((size_t) received < file_req.filename_len) {
+      fprintf(stderr, "Not enough data received for filename.\n");
+      close_conn(connfd);
+      return (void *)-1;
+    }
+
+    // set up a buffer for file operations
+    char buf[512];
+
+    if (file_req.type == GET) {
+      // send the file to the client
+      printf("GET %s\n", filename);
+    } else if (file_req.type == PUT) {
+      // receive the file from the client
+      printf("PUT %s\n", filename);
+    }
+
+  }
+  return (void *) -1;
 }
 
 // check if a username and password are in the database
@@ -249,5 +328,6 @@ void deny_auth(int connfd) {
   if (err) {
     fprintf(stderr, "Error closing connection.\n");
   }
+  printf("Connection closed.\n");
 }
 
