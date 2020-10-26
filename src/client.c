@@ -211,7 +211,7 @@ int do_auth(int sockfd, char *user, char *pass) {
 
   err = send_all(sockfd, &req, sizeof(req));
   if (err == -1) {
-    fprintf(stderr, "send: %s\n", strerror(errno));
+    fprintf(stderr, "Error sending auth request.\n");
     return -1;
   }
   send_all(sockfd, user, strlen(user));
@@ -267,18 +267,6 @@ int do_get(int sockfd, char *filename) {
 int do_put(int sockfd, char *filename) {
   printf("tput filename: %s\n", filename);
 
-  return 0;
-}
-
-// close the connection
-// return: close status
-// sockfd: socket file descriptor to close
-int close_conn(int sockfd) {
-  int err = close(sockfd);
-  if (err) {
-    fprintf(stderr, "close: %s\n", strerror(errno));
-    return -1;
-  }
   return 0;
 }
 

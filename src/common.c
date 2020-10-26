@@ -1,4 +1,8 @@
 #include <sys/socket.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
 #include "common.h"
 
 // keep calling send until finished or error
@@ -11,11 +15,24 @@ int send_all(int sockfd, void *buf, int len) {
   while (len > 0) {
     int n = send(sockfd, buf + sent, len, 0);
     if (n == -1) {
+      fprintf(stderr, "send: %s\n", strerror(errno));
       return -1;
     }
     sent += n;
     len -= n;
   }
   return sent;
+}
+
+// close a connection
+// return: close status
+// sockfd: socket file descriptor to close
+int close_conn(int sockfd) {
+  int err = close(sockfd);
+  if (err) {
+    fprintf(stderr, "close: %s\n", strerror(errno));
+    return -1;
+  }
+  return 0;
 }
 

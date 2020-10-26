@@ -19,7 +19,7 @@ struct ftp_file_request {
   size_t filename_len;
 };
 
-enum ftp_result { SUCCESS = 0x01, FAILURE = 0x02 };
+enum ftp_result { SUCCESS = 0x01, FAILURE = 0x02, UNKNOWN = 0x03 };
 
 struct ftp_auth_response {
   enum ftp_req_type type;
@@ -33,5 +33,6 @@ struct ftp_file_response {
 };
 
 int send_all(int sockfd, void *buf, int len);
+int close_conn(int sockfd);
 
 #endif
