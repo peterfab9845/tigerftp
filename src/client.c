@@ -9,6 +9,10 @@
 #include <string.h>
 #include <limits.h>
 #include <errno.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
 #include "common.h"
 #include "client.h"
 
@@ -75,17 +79,25 @@ int main(void) {
     }
     // do what the command asks
 
+    // tconnect command
     if (cmd == TCONNECT) {
+      // connect to the given server
       r = open_connection(hostname);
       if (r) {
         fprintf(stderr, "Could not connect to server.\n");
-        break;
+        continue;
       }
 
+      // authenticate ourselves
       r = send_auth(username, password);
       if (r) {
         fprintf(stderr, "Incorrect username or password.\n");
+        continue;
       }
+
+      state = CONNECTED;
+
+    // tget command
     } else if (cmd == TGET) {
       if (state != CONNECTED) {
         fprintf(stderr, "You need to connect first.\n");
@@ -94,22 +106,27 @@ int main(void) {
 
       r = send_get(filename);
 
+    // tput command
     } else if (cmd == TPUT) {
       if (state != CONNECTED) {
         fprintf(stderr, "You need to connect first.\n");
+        continue;
       }
 
       r = send_put(filename);
 
+    // exit command
     } else if (cmd == EXIT) {
       // close down the client
       if (state == CONNECTED) {
         close_connection();
       }
       break;
-    }
-    else {
-      printf("shouldn't get here!");
+
+    // unknown command
+    } else {
+      // shouldn't get here, parse_cmd deals with this
+      printf("Unknown command.\n");
     }
   }
 
@@ -121,7 +138,35 @@ int main(void) {
 
 // connect to the given server
 int open_connection(char *host) {
-  printf("tconnect host: %s\n", host);
+
+  // parse the hostname to a sockaddr_in
+  struct addrinfo *result;
+
+  // hints tell getaddrinfo what kind of address we want
+  struct addrinfo hints = {0};
+  hints.ai_flags = 0;               // nothing special
+  hints.ai_family = AF_INET;        // IPv4
+  hints.ai_socktype = SOCK_STREAM;  // TCP
+  hints.ai_protocol = IPPROTO_TCP;  // TCP
+
+  int s = getaddrinfo(host, STR(FTP_PORT), &hints, &result);
+  if (s != 0) {
+    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
+    return -1;
+  }
+
+  // cast to sockaddr_in
+  struct sockaddr_in *addr_in = (struct sockaddr_in *) result->ai_addr;
+
+  // print the ip 
+  char buf[INET_ADDRSTRLEN];
+  const char *ip = inet_ntop(AF_INET, &(addr_in->sin_addr), buf, INET_ADDRSTRLEN);
+  if (ip == NULL) {
+    fprintf(stderr, "inet_ntop: %s\n", gai_strerror(errno));
+    return -1;
+  }
+
+  printf("tconnect host: %s\n", ip);
 
   return 0;
 }

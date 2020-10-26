@@ -4,7 +4,7 @@
 #define STR_X(x) #x
 #define STR(x) STR_X(x)
 
-#define FTP_PORT (2100)
+#define FTP_PORT 2100
 
 enum ftp_action { AUTH = 0x01, GET = 0x02, PUT = 0x03 };
 
