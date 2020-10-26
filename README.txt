@@ -12,5 +12,5 @@ Notes:
 - Hostnames can be used as well as IP addresses in tconnect
 - Port can be set in common.h (don't use parens around it, the stringify won't work)
 -> Default port is 2100
-- Server will bind to all local interfaces
+- Server will bind to local interfaces
 

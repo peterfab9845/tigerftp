@@ -164,7 +164,7 @@ int open_conn(char *hostname) {
   // hints tell getaddrinfo what kind of address we want
   struct addrinfo hints = {0};
   hints.ai_flags = 0;               // nothing special
-  hints.ai_family = AF_UNSPEC;      // IPv4 or IPv6
+  hints.ai_family = AF_INET;        // IPv4
   hints.ai_socktype = SOCK_STREAM;  // TCP
   hints.ai_protocol = IPPROTO_TCP;  // TCP
 
@@ -174,8 +174,8 @@ int open_conn(char *hostname) {
     return -1;
   }
 
-  // create a socket
-  int sockfd = socket(hostinfo->ai_family, hostinfo->ai_socktype, getprotobyname("tcp")->p_proto);
+  // create a socket with the first address response
+  int sockfd = socket(hostinfo->ai_family, hostinfo->ai_socktype, hostinfo->ai_protocol);
   if (sockfd == -1) {
     fprintf(stderr, "socket: %s\n", strerror(errno));
     return -1;
