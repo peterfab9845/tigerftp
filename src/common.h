@@ -6,21 +6,32 @@
 
 #define FTP_PORT 2100
 
-enum ftp_action { AUTH = 0x01, GET = 0x02, PUT = 0x03 };
+enum ftp_req_type { AUTH_REQ = 0x01, AUTH_RESP = 0x02, GET = 0x03, PUT = 0x04 };
 
-struct ftp_request {
-  enum ftp_action action;
-  char *username;
-  char *password;
-  char *filename;
+struct ftp_auth_request {
+  enum ftp_req_type type;
+  size_t username_len;
+  size_t password_len;
 };
 
-enum ftp_ack_result { SUCCESS = 0x00, FAILURE = 0x01 };
+struct ftp_file_request {
+  enum ftp_req_type type;
+  size_t filename_len;
+};
 
-struct ftp_response {
-  enum ftp_action action;
-  enum ftp_ack_result result;
+enum ftp_result { SUCCESS = 0x01, FAILURE = 0x02 };
+
+struct ftp_auth_response {
+  enum ftp_req_type type;
+  enum ftp_result result;
+};
+
+struct ftp_file_response {
+  enum ftp_req_type type;
+  enum ftp_result result;
   size_t filesize;
 };
+
+int send_all(int sockfd, void *buf, int len);
 
 #endif

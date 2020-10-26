@@ -96,11 +96,17 @@ int main(void) {
 
       // authenticate ourselves
       err = do_auth(sockfd, username, password);
-      if (err) {
+      if (err == 1) {
         fprintf(stdout, "Incorrect username or password.\n");
+        close_conn(sockfd);
+        continue;
+      } else if (err == -1) {
+        fprintf(stdout, "Error occurred during authentication.\n");
+        close_conn(sockfd);
         continue;
       }
 
+      // connected and authenticated successfully
       state = CONNECTED;
 
     // **** tget command
@@ -186,7 +192,7 @@ int open_conn(char *hostname) {
 }
 
 // send an authentication request to the server
-// return: authentication result
+// return: authentication result (-1 error, 0 success, 1 denied)
 // sockfd: socket file descriptor
 // user: username to try
 // pass: password to try
@@ -194,13 +200,55 @@ int do_auth(int sockfd, char *user, char *pass) {
   printf("tconnect user: %s\n", user);
   printf("tconnect pass: %s\n", pass);
 
-  char test[12] = "hello world";
-  send(sockfd, test, 12, 0);
-  read(sockfd, test, 5);
-  printf("%.5s", test);
+  struct ftp_auth_request req = {0};
+  req.type = htonl(AUTH_REQ);
+  req.username_len = htonl(strlen(user));
+  req.password_len = htonl(strlen(pass));
 
+  int err;
 
-  return 0;
+  err = send_all(sockfd, &req, sizeof(req));
+  if (err == -1) {
+    fprintf(stderr, "send: %s\n", strerror(errno));
+    return -1;
+  }
+  send_all(sockfd, user, strlen(user));
+  if (err == -1) {
+    fprintf(stderr, "send: %s\n", strerror(errno));
+    return -1;
+  }
+  send_all(sockfd, pass, strlen(pass));
+  if (err == -1) {
+    fprintf(stderr, "send: %s\n", strerror(errno));
+    return -1;
+  }
+
+  struct ftp_auth_response resp = {0};
+  ssize_t received = recv(sockfd, &resp, sizeof(resp), MSG_WAITALL);
+  if (received == 0) {
+    fprintf(stderr, "Connection closed during authentication.\n");
+    return -1;
+  } else if (received == -1) {
+    fprintf(stderr, "recv: %s\n", strerror(errno));
+    return -1;
+  } else if ((size_t)received < sizeof(resp)) {
+    fprintf(stderr, "Not enough data received during authentication.\n");
+    return -1;
+  }
+
+  resp.type = ntohl(resp.type);
+  resp.result = ntohl(resp.result);
+
+  if (resp.type != AUTH_RESP) {
+    fprintf(stderr, "Sequence error: expected AUTH_RESP\n");
+    return -1;
+  }
+  if (resp.result == SUCCESS) {
+    return 0;
+  } else if (resp.result == FAILURE) {
+    return 1;
+  }
+  return -1;
 }
 
 // send a get request to the server

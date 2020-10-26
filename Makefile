@@ -13,6 +13,7 @@ CLIENT_DIR = client/
 CLIENT_NAME = TigerC
 CLIENT_BIN = $(CLIENT_DIR)$(CLIENT_NAME)
 
+COMMON_SRC = $(SRC_DIR)common.c
 COMMON_H = $(SRC_DIR)common.h
 
 # result files
@@ -31,10 +32,10 @@ all: $(SERVER_BIN) $(CLIENT_BIN)
 
 # compile modules and programs
 $(SERVER_BIN): $(SERVER_SRC) $(COMMON_H) $(SERVER_H)
-	$(CC) $(CFLAGS) $(SERVER_SRC) -o $@
+	$(CC) $(CFLAGS) $(SERVER_SRC) $(COMMON_SRC) -o $@
 
 $(CLIENT_BIN): $(CLIENT_SRC) $(COMMON_H) $(CLIENT_H)
-	$(CC) $(CFLAGS) $(CLIENT_SRC) -o $@
+	$(CC) $(CFLAGS) $(CLIENT_SRC) $(COMMON_SRC) -o $@
 
 # run the client program
 .PHONY: run_client
