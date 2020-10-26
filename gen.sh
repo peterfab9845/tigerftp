@@ -10,7 +10,9 @@ n=3;
 last=100;
 while [ $n -lt $last ]; do
   dd if=/dev/zero of=client/upload$n.txt bs=1024 count=$size 2>/dev/null
+  echo "upload $n" >> client/upload$n.txt
   dd if=/dev/zero of=server/down$n.txt bs=1024 count=$size 2>/dev/null
+  echo "download $n" >> server/down$n.txt
   n=$((n+1));
 done;
 

@@ -1,9 +1,9 @@
 server/TigerS
 client/TigerC
-server/down*.txt
+server/*.txt
 !server/down1.txt
 !server/down2.txt
-client/upload*.txt
+client/*.txt
 !client/upload1.txt
 !client/upload2.txt
 

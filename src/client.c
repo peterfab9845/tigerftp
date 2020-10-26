@@ -248,12 +248,12 @@ int do_auth(int sockfd, char *user, char *pass) {
   }
 
   resp.type = ntohl(resp.type);
-  resp.result = ntohl(resp.result);
 
   if (resp.type != AUTH_RESP) {
     fprintf(stderr, "Sequence error: expected AUTH_RESP\n");
     return -1;
   }
+  resp.result = ntohl(resp.result);
   if (resp.result == SUCCESS) {
     return 0;
   } else if (resp.result == FAILURE) {
@@ -263,9 +263,10 @@ int do_auth(int sockfd, char *user, char *pass) {
 }
 
 // send a get request to the server
-// return: put result
+// return: get result
 // filename: the filename to get from the server
 int do_get(int sockfd, char *filename) {
+  // make the get request
   struct ftp_file_request req = {0};
   req.type = htonl(GET);
   req.filename_len = htonl(strlen(filename));
@@ -282,7 +283,77 @@ int do_get(int sockfd, char *filename) {
     return -1;
   }
 
+  // get server response
+  struct ftp_file_response resp = {0};
+
+  ssize_t received = recv(sockfd, &resp, sizeof(resp), MSG_WAITALL);
+  if (received == 0) {
+    fprintf(stderr, "Connection closed during response.\n");
+    return -1;
+  } else if (received == -1) {
+    fprintf(stderr, "recv: %s\n", strerror(errno));
+    return -1;
+  } else if ((size_t)received < sizeof(resp)) {
+    fprintf(stderr, "Not enough data received during response.\n");
+    return -1;
+  }
+
+  // check response results
+  resp.type = ntohl(resp.type);
+
+  if (resp.type != GET) {
+    fprintf(stderr, "Sequence error: expected GET\n");
+    return -1;
+  }
+
+  resp.result = ntohl(resp.result);
+  if (resp.result != SUCCESS) {
+    fprintf(stderr, "Server failed to read file.\n");
+    return -1;
+  }
+  // get the file size
+  resp.filesize = ntohl(resp.filesize);
+
+  // create new file for writing
+  FILE *file = fopen(filename, "w");
+  if (!file) {
+    fprintf(stderr, "Failed to open requested file for writing.\n");
+    return -1;
+  }
+
   char buf[512];
+
+  size_t num_received = 0;
+  int to_receive;
+  while (num_received < resp.filesize) {
+    // determine how much to receive
+    if (resp.filesize - num_received >= sizeof(buf)) {
+      to_receive = sizeof(buf);
+    } else {
+      to_receive = resp.filesize - num_received;
+    }
+    // receive and write to the file
+    ssize_t received = recv(sockfd, buf, to_receive, 0);
+    if (received == 0) {
+      fprintf(stderr, "Connection closed.\n");
+      return -1;
+    } else if (received == -1) {
+      fprintf(stderr, "recv: %s\n", strerror(errno));
+      return -1;
+    }
+    fwrite(buf, 1, received, file);
+    if (ferror(file)) {
+      fprintf(stderr, "fwrite: %s\n", strerror(errno));
+      return -1;
+    }
+    num_received += received;
+  }
+
+  err = fclose(file);
+  if (err) {
+    fprintf(stderr, "fclose: %s\n", strerror(errno));
+    return -1;
+  }
 
   return 0;
 }
@@ -306,6 +377,7 @@ int do_put(int sockfd, char *filename) {
     fprintf(stderr, "Error sending put filename.\n");
     return -1;
   }
+
 
   char buf[512];
 

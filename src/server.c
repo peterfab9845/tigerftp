@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
 
 #include "common.h"
 #include "server.h"
@@ -261,13 +263,94 @@ void *handle_client(void *arg) {
     if (file_req.type == GET) {
       // send the file to the client
       printf("GET %s\n", filename);
+
+      FILE *file = fopen(filename, "r");
+      if (!file) {
+        fprintf(stderr, "Failed to open requested file for reading.\n");
+        if (send_fail(connfd, GET)) {
+          return (void *)-1;
+        }
+        continue;
+      }
+      // we have a good FILE handle - file exists
+      // determine the size and send to client
+
+      struct stat stats;
+      err = stat(filename, &stats);
+      if (err) {
+        fprintf(stderr, "stat: %s\n", strerror(errno));
+        // tell the client there was a problem
+        if (send_fail(connfd, GET)) {
+          return (void *)-1;
+        }
+        continue;
+      }
+      off_t filesize = stats.st_size;
+      // send file size in a successful response
+      struct ftp_file_response resp = {0};
+      resp.type = htonl(GET);
+      resp.result = htonl(SUCCESS);
+      resp.filesize = htonl(filesize);
+
+      err = send_all(connfd, &resp, sizeof(resp));
+      if (err == -1) {
+        fprintf(stderr, "Error sending filesize.\n");
+        close_conn(connfd);
+        printf("Connection closed.\n");
+        return (void *)-1;
+      } 
+
+      // send the file
+      for (;;) {
+        size_t num_read = fread(buf, 1, sizeof(buf), file);
+        if (num_read != 0) {
+          err = send_all(connfd, buf, num_read);
+          if (err == -1) {
+            fprintf(stderr, "Error sending file data.\n");
+            close_conn(connfd);
+            printf("Connection closed.\n");
+            return (void *)-1;
+          } 
+        } else {
+          if (ferror(file)) {
+            fprintf(stderr, "fread: %s\n", strerror(errno));
+            close_conn(connfd);
+            printf("Connection closed.\n");
+            return (void *)-1;
+          } else {
+            // read 0 and no ferror, so we're finished
+            break;
+          }
+        }
+      }
+      // done sending file
+      err = fclose(file);
+      if (err) {
+        fprintf(stderr, "fclose: %s\n", strerror(errno));
+      }
     } else if (file_req.type == PUT) {
       // receive the file from the client
       printf("PUT %s\n", filename);
     }
-
+    free(filename);
   }
   return (void *) -1;
+}
+
+int send_fail(int connfd, enum ftp_req_type type) {
+  struct ftp_file_response resp = {0};
+  resp.type = htonl(type);
+  resp.result = htonl(FAILURE);
+  resp.filesize = 0;
+
+  int err = send_all(connfd, &resp, sizeof(resp));
+  if (err == -1) {
+    fprintf(stderr, "Error sending command response.\n");
+    close_conn(connfd);
+    printf("Connection closed.\n");
+    return -1;
+  }
+  return 0;
 }
 
 // check if a username and password are in the database
