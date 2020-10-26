@@ -22,6 +22,7 @@ TEST_SCRIPT = test.sh
 # compiler and flags
 CC = gcc
 CFLAGS = -Wall -Wextra -std=gnu99 -g
+PTHREAD_FLAG = -lpthread
 
 # disable echoing commands for nicer output
 .SILENT:
@@ -32,7 +33,7 @@ all: $(SERVER_BIN) $(CLIENT_BIN)
 
 # compile modules and programs
 $(SERVER_BIN): $(SERVER_SRC) $(COMMON_H) $(SERVER_H)
-	$(CC) $(CFLAGS) $(SERVER_SRC) $(COMMON_SRC) -o $@
+	$(CC) $(CFLAGS) $(PTHREAD_FLAG) $(SERVER_SRC) $(COMMON_SRC) -o $@
 
 $(CLIENT_BIN): $(CLIENT_SRC) $(COMMON_H) $(CLIENT_H)
 	$(CC) $(CFLAGS) $(CLIENT_SRC) $(COMMON_SRC) -o $@
