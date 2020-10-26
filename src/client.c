@@ -52,8 +52,8 @@ int main(void) {
     printf("TigerC> ");
     // get a line
     if (fgets(line, line_max+1, stdin) == NULL) {
-      if (errno) {
-        fprintf(stderr, "Error getting command.\n");
+      if (ferror(stdin)) {
+        fprintf(stderr, "Error getting command: %s\n", strerror(errno));
         exit(1);
       } else {
         printf("exit\n"); // fake command for EOF
@@ -72,61 +72,70 @@ int main(void) {
     }
 
     // interpret the command
-    int r = parse_cmd(line, &cmd, &hostname, &username, &password, &filename);
-    if (r) {
+    int err = parse_cmd(line, &cmd, &hostname, &username, &password, &filename);
+    if (err) {
       // error parsing command, start the loop again
       continue;
     }
     // do what the command asks
 
-    // tconnect command
+    int sockfd;
+
+    // **** tconnect command
     if (cmd == TCONNECT) {
+      if (state != IDLE) {
+        fprintf(stdout, "You are already connected.\n");
+        continue;
+      }
       // connect to the given server
-      r = open_connection(hostname);
-      if (r) {
-        fprintf(stderr, "Could not connect to server.\n");
+      sockfd = open_conn(hostname);
+      if (sockfd == -1) {
+        fprintf(stdout, "Could not connect to server.\n");
         continue;
       }
 
       // authenticate ourselves
-      r = send_auth(username, password);
-      if (r) {
-        fprintf(stderr, "Incorrect username or password.\n");
+      err = do_auth(sockfd, username, password);
+      if (err) {
+        fprintf(stdout, "Incorrect username or password.\n");
         continue;
       }
 
       state = CONNECTED;
 
-    // tget command
+    // **** tget command
     } else if (cmd == TGET) {
       if (state != CONNECTED) {
-        fprintf(stderr, "You need to connect first.\n");
+        fprintf(stdout, "You need to connect first.\n");
         continue;
       }
 
-      r = send_get(filename);
+      err = do_get(sockfd, filename);
 
-    // tput command
+    // **** tput command
     } else if (cmd == TPUT) {
       if (state != CONNECTED) {
-        fprintf(stderr, "You need to connect first.\n");
+        fprintf(stdout, "You need to connect first.\n");
         continue;
       }
 
-      r = send_put(filename);
+      err = do_put(sockfd, filename);
 
-    // exit command
+    // **** exit command
     } else if (cmd == EXIT) {
       // close down the client
       if (state == CONNECTED) {
-        close_connection();
+        err = close_conn(sockfd);
+        if (err) {
+          fprintf(stderr, "Could not close connection.\n");
+        }
       }
       break;
 
-    // unknown command
+    // **** unknown command
     } else {
       // shouldn't get here, parse_cmd deals with this
-      printf("Unknown command.\n");
+      fprintf(stdout, "Unknown command.\n");
     }
   }
 
@@ -137,66 +146,100 @@ int main(void) {
 }
 
 // connect to the given server
-int open_connection(char *host) {
+// return: socket file descriptor
+// hostname: the hostname of the server to connect to
+int open_conn(char *hostname) {
 
-  // parse the hostname to a sockaddr_in
-  struct addrinfo *result;
+  int err;
+
+  // parse the hostname to get the addrinfo
+  struct addrinfo *hostinfo;
 
   // hints tell getaddrinfo what kind of address we want
   struct addrinfo hints = {0};
   hints.ai_flags = 0;               // nothing special
-  hints.ai_family = AF_INET;        // IPv4
+  hints.ai_family = AF_UNSPEC;      // IPv4 or IPv6
   hints.ai_socktype = SOCK_STREAM;  // TCP
   hints.ai_protocol = IPPROTO_TCP;  // TCP
 
-  int s = getaddrinfo(host, STR(FTP_PORT), &hints, &result);
-  if (s != 0) {
-    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
+  err = getaddrinfo(hostname, STR(FTP_PORT), &hints, &hostinfo);
+  if (err) {
+    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(err));
     return -1;
   }
 
-  // cast to sockaddr_in
-  struct sockaddr_in *addr_in = (struct sockaddr_in *) result->ai_addr;
-
-  // print the ip 
-  char buf[INET_ADDRSTRLEN];
-  const char *ip = inet_ntop(AF_INET, &(addr_in->sin_addr), buf, INET_ADDRSTRLEN);
-  if (ip == NULL) {
-    fprintf(stderr, "inet_ntop: %s\n", gai_strerror(errno));
+  // create a socket
+  int sockfd = socket(hostinfo->ai_family, hostinfo->ai_socktype, getprotobyname("tcp")->p_proto);
+  if (sockfd == -1) {
+    fprintf(stderr, "socket: %s\n", strerror(errno));
     return -1;
   }
 
-  printf("tconnect host: %s\n", ip);
-
-  return 0;
+  // connect to the specified server
+  err = connect(sockfd, hostinfo->ai_addr, hostinfo->ai_addrlen);
+  if (err) {
+    fprintf(stderr, "connect: %s\n", strerror(errno));
+    return -1;
+  }
+  
+  return sockfd;
 }
 
 // send an authentication request to the server
-int send_auth(char *user, char *pass) {
+// return: authentication result
+// sockfd: socket file descriptor
+// user: username to try
+// pass: password to try
+int do_auth(int sockfd, char *user, char *pass) {
   printf("tconnect user: %s\n", user);
   printf("tconnect pass: %s\n", pass);
+
+  char test[12] = "hello world";
+  send(sockfd, test, 12, 0);
+  read(sockfd, test, 5);
+  printf("%.5s", test);
+
 
   return 0;
 }
 
 // send a get request to the server
-int send_get(char *filename) {
+// return: put result
+// filename: the filename to get from the server
+int do_get(int sockfd, char *filename) {
   printf("tget filename: %s\n", filename);
   return 0;
 }
 
 // send a put request to the server
-int send_put(char *filename) {
+// return: get result
+// filename: the filename to upload to the server
+int do_put(int sockfd, char *filename) {
   printf("tput filename: %s\n", filename);
 
   return 0;
 }
 
-void close_connection(void) {
-  printf("close conn\n");
+// close the connection
+// return: close status
+// sockfd: socket file descriptor to close
+int close_conn(int sockfd) {
+  int err = close(sockfd);
+  if (err) {
+    fprintf(stderr, "close: %s\n", strerror(errno));
+    return -1;
+  }
+  return 0;
 }
 
 // parse the input and provide the command
+// return: parse/command status
+// line: the line containing command(s) to parse
+// cmd: set to the command parsed
+// hostname: set to the provided hostname, if any
+// username: set to the provided username, if any
+// password: set to the provided password, if any
+// filename: set to the provided filename, if any
 int parse_cmd(char *line, enum ftp_command *cmd, char **hostname,
     char **username, char **password, char **filename) {
 
@@ -223,21 +266,21 @@ int parse_cmd(char *line, enum ftp_command *cmd, char **hostname,
     if (token) {
       *hostname = token;
     } else {
-      fprintf(stderr, "tconnect requires a host to connect to.\n");
+      fprintf(stdout, "tconnect requires a host to connect to.\n");
       return -1;
     }
     token = strtok_r(NULL, " \n", &strtok_state);
     if (token) {
       *username = token;
     } else {
-      fprintf(stderr, "tconnect requires a username.\n");
+      fprintf(stdout, "tconnect requires a username.\n");
       return -1;
     }
     token = strtok_r(NULL, " \n", &strtok_state);
     if (token) {
       *password = token;
     } else {
-      fprintf(stderr, "tconnect requires a password.\n");
+      fprintf(stdout, "tconnect requires a password.\n");
       return -1;
     }
   } else if (strcmp(token, "tget") == 0) {
@@ -247,7 +290,7 @@ int parse_cmd(char *line, enum ftp_command *cmd, char **hostname,
     if (token) {
       *filename = token;
     } else {
-      fprintf(stderr, "tget requires a filename.\n");
+      fprintf(stdout, "tget requires a filename.\n");
       return -1;
     }
   } else if (strcmp(token, "tput") == 0) {
@@ -257,14 +300,14 @@ int parse_cmd(char *line, enum ftp_command *cmd, char **hostname,
     if (token) {
       *filename = token;
     } else {
-      fprintf(stderr, "tput requires a filename.\n");
+      fprintf(stdout, "tput requires a filename.\n");
       return -1;
     }
   } else if (strcmp(token, "exit") == 0) {
     // exit command
     *cmd = EXIT;
   } else {
-    fprintf(stderr, "Command not recognized: %s\n", token);
+    fprintf(stdout, "Command not recognized: %s\n", token);
     return -1;
   }
   return 0;
