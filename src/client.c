@@ -187,6 +187,8 @@ int open_conn(char *hostname) {
     fprintf(stderr, "connect: %s\n", strerror(errno));
     return -1;
   }
+
+  freeaddrinfo(hostinfo);
   
   return sockfd;
 }
