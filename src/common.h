@@ -6,7 +6,7 @@
 
 #define FTP_PORT 2100
 
-enum ftp_req_type { AUTH_REQ = 0x01, AUTH_RESP = 0x02, GET = 0x03, PUT = 0x04 };
+enum ftp_req_type { AUTH_REQ = 0x01, AUTH_RESP = 0x02, GET = 0x03, PUT = 0x04, END = 0x05 };
 
 struct ftp_auth_request {
   enum ftp_req_type type;
@@ -33,6 +33,7 @@ struct ftp_file_response {
 };
 
 int send_all(int sockfd, void *buf, int len);
+int send_close(int sockfd);
 int close_conn(int sockfd);
 
 #endif

@@ -1,8 +1,9 @@
+#include <arpa/inet.h>
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
 #include "common.h"
 
 // keep calling send until finished or error
@@ -24,7 +25,20 @@ int send_all(int sockfd, void *buf, int len) {
   return sent;
 }
 
-// close a connection
+int send_close(int sockfd) {
+  struct ftp_file_request req = {0};
+  req.type = htonl(END);
+  req.filename_len = 0;
+
+  int err = send_all(sockfd, &req, sizeof(req));
+  if (err == -1) {
+    return -1;
+  }
+  return 0;
+}
+
+
+// close a connection by socket file descriptor
 // return: close status
 // sockfd: socket file descriptor to close
 int close_conn(int sockfd) {

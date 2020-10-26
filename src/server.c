@@ -3,13 +3,14 @@
 // Peter Fabinski (pnf9945)
 // TigerS - server
 
+#include <arpa/inet.h>
+#include <errno.h>
+#include <netdb.h>
+#include <pthread.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <netdb.h>
-#include <errno.h>
 #include <string.h>
-#include <pthread.h>
 
 #include "common.h"
 #include "server.h"
@@ -55,6 +56,8 @@ int main(void) {
     return -1;
   }
 
+  freeaddrinfo(hostinfo);
+
   // listen for connections
   err = listen(listenfd, 128);
   if (err) {
@@ -87,25 +90,25 @@ void *handle_client(void *arg) {
 
   int connfd = (intptr_t) arg;
   // receive the initial request from the client
-  struct ftp_auth_request req = {0};
-  ssize_t received = recv(connfd, &req, sizeof(req), MSG_WAITALL);
+  struct ftp_auth_request auth_req = {0};
+  ssize_t received = recv(connfd, &auth_req, sizeof(auth_req), MSG_WAITALL);
   if (received == 0) {
     fprintf(stderr, "Connection closed.\n");
     return (void *)-1;
   } else if (received == -1) {
     fprintf(stderr, "recv: %s\n", strerror(errno));
     return (void *)-1;
-  } else if ((size_t) received < sizeof(req)) {
+  } else if ((size_t) received < sizeof(auth_req)) {
     fprintf(stderr, "Not enough data received for authentication request.\n");
     return (void *)-1;
   }
 
-  req.type = ntohl(req.type);
-  req.username_len = ntohl(req.username_len);
-  req.password_len = ntohl(req.password_len);
+  auth_req.type = ntohl(auth_req.type);
+  auth_req.username_len = ntohl(auth_req.username_len);
+  auth_req.password_len = ntohl(auth_req.password_len);
 
   // check request type
-  if (req.type != AUTH_REQ) {
+  if (auth_req.type != AUTH_REQ) {
     fprintf(stderr, "Sequence error: expected AUTH_REQ\n");
     err = close_conn(connfd);
     if (err) {
@@ -114,44 +117,46 @@ void *handle_client(void *arg) {
   }
 
   // make space for and receive the username
-  char *username = malloc(req.username_len + 1);
+  char *username = malloc(auth_req.username_len + 1);
   if (username == NULL) {
     fprintf(stderr, "Out of memory.\n");
   }
-  username[req.username_len] = '\0';
+  username[auth_req.username_len] = '\0';
 
   // make space for and receive the password
-  received = recv(connfd, username, req.username_len, MSG_WAITALL);
+  received = recv(connfd, username, auth_req.username_len, MSG_WAITALL);
   if (received == 0) {
     fprintf(stderr, "Connection closed during receive of username.\n");
     return (void *)-1;
   } else if (received == -1) {
     fprintf(stderr, "recv: %s\n", strerror(errno));
     return (void *)-1;
-  } else if ((size_t) received < req.username_len) {
+  } else if ((size_t) received < auth_req.username_len) {
     fprintf(stderr, "Not enough data received for username.\n");
     return (void *)-1;
   }
 
-  char *password = malloc(req.password_len + 1);
+  char *password = malloc(auth_req.password_len + 1);
   if (password == NULL) {
     fprintf(stderr, "Out of memory.\n");
   }
-  password[req.password_len] = '\0';
+  password[auth_req.password_len] = '\0';
 
-  received = recv(connfd, password, req.password_len, MSG_WAITALL);
+  received = recv(connfd, password, auth_req.password_len, MSG_WAITALL);
   if (received == 0) {
     fprintf(stderr, "Connection closed during receive of password.\n");
     return (void *)-1;
   } else if (received == -1) {
     fprintf(stderr, "recv: %s\n", strerror(errno));
     return (void *)-1;
-  } else if ((size_t) received < req.password_len) {
+  } else if ((size_t) received < auth_req.password_len) {
     fprintf(stderr, "Not enough data received for password.\n");
     return (void *)-1;
   }
 
   int auth_result = check_auth(username, password);
+  free(username);
+  free(password);
   if (auth_result == 1) {
     // good password, send the acknowledge with success
     struct ftp_auth_response resp = {0};
@@ -178,6 +183,9 @@ void *handle_client(void *arg) {
   }
 
   // process user requests
+  for (;;) {
+    struct ftp_file_request req = {0};
+    //get, put, end
 
 
   return 0;

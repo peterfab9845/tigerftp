@@ -6,7 +6,7 @@ Notes:
 - Build with "make"
 - Run client/server with "make run_client"/"make run_server"
 - Test script is not changed. Run with "make test"
-- Generate test files with "make gen" (takes a minute to run)
+- Generate test files with "make gen" (takes a minute to run, maybe reduce size)
 -> 1 and 2 are different with recognizable text
 -> 3-100 are 50MB files from /dev/zero
 - Hostnames can be used as well as IP addresses in tconnect

@@ -3,15 +3,15 @@
 // Peter Fabinski (pnf9945)
 // TigerC - client
 
+#include <arpa/inet.h>
+#include <errno.h>
+#include <limits.h>
+#include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <limits.h>
-#include <errno.h>
-#include <arpa/inet.h>
 #include <sys/socket.h>
-#include <netdb.h>
+#include <unistd.h>
 
 #include "common.h"
 #include "client.h"
@@ -108,6 +108,7 @@ int main(void) {
 
       // connected and authenticated successfully
       state = CONNECTED;
+      printf("Connected successfully.\n");
 
     // **** tget command
     } else if (cmd == TGET) {
@@ -131,9 +132,13 @@ int main(void) {
     } else if (cmd == EXIT) {
       // close down the client
       if (state == CONNECTED) {
+        err = send_close(sockfd);
+        if (err) {
+          fprintf(stderr, "Failed to close gracefully.\n");
+        }
         err = close_conn(sockfd);
         if (err) {
-          fprintf(stderr, "Could not close connection.\n");
+          fprintf(stderr, "Error closing connection.\n");
         }
       }
       break;
@@ -199,8 +204,6 @@ int open_conn(char *hostname) {
 // user: username to try
 // pass: password to try
 int do_auth(int sockfd, char *user, char *pass) {
-  printf("tconnect user: %s\n", user);
-  printf("tconnect pass: %s\n", pass);
 
   struct ftp_auth_request req = {0};
   req.type = htonl(AUTH_REQ);
