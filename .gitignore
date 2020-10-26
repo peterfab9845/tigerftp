@@ -1,3 +1,5 @@
 server/TigerS
 client/TigerC
+server/down*.txt
+client/upload*.txt
 

@@ -4,12 +4,14 @@ SRC_DIR = src/
 SERVER_SRC = $(SRC_DIR)server.c
 SERVER_H = $(SRC_DIR)server.h
 SERVER_DIR = server/
-SERVER_BIN = $(SERVER_DIR)TigerS
+SERVER_NAME = TigerS
+SERVER_BIN = $(SERVER_DIR)$(SERVER_NAME)
 
 CLIENT_SRC = $(SRC_DIR)client.c
 CLIENT_H = $(SRC_DIR)client.h
 CLIENT_DIR = client/
-CLIENT_BIN = $(CLIENT_DIR)TigerC
+CLIENT_NAME = TigerC
+CLIENT_BIN = $(CLIENT_DIR)$(CLIENT_NAME)
 
 COMMON_H = $(SRC_DIR)common.h
 
@@ -37,18 +39,30 @@ $(CLIENT_BIN): $(CLIENT_SRC) $(COMMON_H) $(CLIENT_H)
 # run the client program
 .PHONY: run_client
 run_client: $(CLIENT_BIN)
-	cd $(CLIENT_DIR); ./$(CLIENT_BIN)
+	cd $(CLIENT_DIR); ./$(CLIENT_NAME)
 
 # run the server program
 .PHONY: run_server
 run_server: $(SERVER_BIN)
-	cd $(SERVER_DIR); ./$(SERVER_BIN)
+	cd $(SERVER_DIR); ./$(SERVER_NAME)
+
+# generate test files
+.PHONY: gen
+gen:
+	chmod a+x gen.sh
+	./gen.sh
+
+# remove the test files
+.PHONY: cleangen
+cleangen:
+	-rm -f $(SERVER_DIR)down*.txt
+	-rm -f $(CLIENT_DIR)upload*.txt
 
 # run the test script
 .PHONY: test
 test: $(CLIENT_BIN)
-	chmod a+x client/test.sh
-	cd client; ./test.sh
+	chmod a+x $(CLIENT_DIR)/test.sh
+	cd $(CLIENT_DIR); ./test.sh
 
 # clean up binaries and output files
 .PHONY: clean
@@ -62,6 +76,8 @@ help:
 	echo "all:        build TigerS and TigerC"
 	echo "run_server: run TigerS"
 	echo "run_client: run TigerC"
+	echo "gen:        generate test files"
+	echo "cleangen:   remove test files"
 	echo "test:       run test.sh"
 	echo "clean:      remove output and binary files"
 	echo "help:       show this help"
