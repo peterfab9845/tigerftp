@@ -349,6 +349,7 @@ int do_get(int sockfd, char *filename) {
     num_received += received;
   }
 
+  printf("File transfer completed.\n");
   err = fclose(file);
   if (err) {
     fprintf(stderr, "fclose: %s\n", strerror(errno));
