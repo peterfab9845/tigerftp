@@ -58,6 +58,8 @@ gen:
 .PHONY: cleangen
 cleangen:
 	-rm -f $(SERVER_DIR)down*.txt
+	-rm -f $(SERVER_DIR)upload*.txt
+	-rm -f $(CLIENT_DIR)down*.txt
 	-rm -f $(CLIENT_DIR)upload*.txt
 
 # run the test script
