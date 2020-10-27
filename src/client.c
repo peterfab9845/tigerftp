@@ -7,10 +7,12 @@
 #include <errno.h>
 #include <limits.h>
 #include <netdb.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include "common.h"
@@ -269,6 +271,7 @@ int do_get(int sockfd, char *filename) {
   // make the get request
   struct ftp_file_request req = {0};
   req.type = htonl(GET);
+  req.filesize = htonl(0); // unknown
   req.filename_len = htonl(strlen(filename));
 
   int err = send_all(sockfd, &req, sizeof(req));
@@ -363,11 +366,30 @@ int do_get(int sockfd, char *filename) {
 // return: put result
 // filename: the filename to upload to the server
 int do_put(int sockfd, char *filename) {
+  // open the file to send
+  FILE *file = fopen(filename, "r");
+  if (!file) {
+    fprintf(stderr, "Failed to open specified file for reading.\n");
+    return -1;
+  }
+  // we have a good FILE handle - file exists
+  // determine the size to send to server
+
+  struct stat stats;
+  int err = stat(filename, &stats);
+  if (err) {
+    fprintf(stderr, "stat: %s\n", strerror(errno));
+    // don't transfer if we can't determine size
+    return -1;
+  }
+  off_t filesize = stats.st_size;
+  // send file size in the PUT request
   struct ftp_file_request req = {0};
   req.type = htonl(PUT);
+  req.filesize = htonl(filesize);
   req.filename_len = htonl(strlen(filename));
 
-  int err = send_all(sockfd, &req, sizeof(req));
+  err = send_all(sockfd, &req, sizeof(req));
   if (err == -1) {
     fprintf(stderr, "Error sending put request.\n");
     return -1;
@@ -379,8 +401,61 @@ int do_put(int sockfd, char *filename) {
     return -1;
   }
 
+  // get server response
+  struct ftp_file_response resp = {0};
 
+  ssize_t received = recv(sockfd, &resp, sizeof(resp), MSG_WAITALL);
+  if (received == 0) {
+    fprintf(stderr, "Connection closed during response.\n");
+    return -1;
+  } else if (received == -1) {
+    fprintf(stderr, "recv: %s\n", strerror(errno));
+    return -1;
+  } else if ((size_t)received < sizeof(resp)) {
+    fprintf(stderr, "Not enough data received during response.\n");
+    return -1;
+  }
+
+  // check response results
+  resp.type = ntohl(resp.type);
+
+  if (resp.type != PUT) {
+    fprintf(stderr, "Sequence error: expected PUT\n");
+    return -1;
+  }
+  resp.result = ntohl(resp.result);
+  if (resp.result != SUCCESS) {
+    fprintf(stderr, "Server failed to create file.\n");
+    return -1;
+  }
+
+  // transmit the file to the server
   char buf[512];
+
+  for (;;) {
+    size_t num_read = fread(buf, 1, sizeof(buf), file);
+    if (num_read != 0) {
+      err = send_all(sockfd, buf, num_read);
+      if (err == -1) {
+        fprintf(stderr, "Error sending file data.\n");
+        return -1;
+      } 
+    } else {
+      if (ferror(file)) {
+        fprintf(stderr, "fread: %s\n", strerror(errno));
+        return -1;
+      } else {
+        // read 0 and no ferror, so we're finished
+        break;
+      }
+    }
+  }
+  printf("File transfer completed.\n");
+  // done sending file
+  err = fclose(file);
+  if (err) {
+    fprintf(stderr, "fclose: %s\n", strerror(errno));
+  }
 
   return 0;
 }

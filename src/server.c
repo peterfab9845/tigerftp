@@ -13,6 +13,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include "common.h"
 #include "server.h"
@@ -238,6 +239,8 @@ void *handle_client(void *arg) {
 
     // otherwise, it's a GET or PUT. Get the filename.
     file_req.filename_len = ntohl(file_req.filename_len);
+    // and size, if needed
+    file_req.filesize = ntohl(file_req.filesize);
 
     char *filename = malloc(file_req.filename_len + 1);
     filename[file_req.filename_len] = '\0';
@@ -259,6 +262,8 @@ void *handle_client(void *arg) {
 
     // set up a buffer for file operations
     char buf[512];
+
+    // *********** GET REQUEST
 
     if (file_req.type == GET) {
       // send the file to the client
@@ -328,9 +333,74 @@ void *handle_client(void *arg) {
       if (err) {
         fprintf(stderr, "fclose: %s\n", strerror(errno));
       }
+    // *********** PUT REQUEST
+
     } else if (file_req.type == PUT) {
-      // receive the file from the client
+      // receive a file from the client
       printf("PUT %s\n", filename);
+
+      // first send a response to the request
+      struct ftp_file_response resp = {0};
+      resp.type = htonl(PUT);
+      resp.result = htonl(SUCCESS);
+      resp.filesize = htonl(file_req.filesize); // not needed here, but why not include
+
+      err = send_all(connfd, &resp, sizeof(resp));
+      if (err == -1) {
+        fprintf(stderr, "Error sending PUT response.\n");
+        close_conn(connfd);
+        printf("Connection closed.\n");
+        return (void *)-1;
+      } 
+
+      // create new file for writing
+      FILE *file = fopen(filename, "w");
+      if (!file) {
+        fprintf(stderr, "Failed to open requested file for writing.\n");
+        close_conn(connfd);
+        printf("Connection closed.\n");
+        return (void *)-1;
+      }
+
+      char buf[512];
+
+      size_t num_received = 0;
+      int to_receive;
+      while (num_received < file_req.filesize) {
+        // determine how much to receive
+        if (file_req.filesize - num_received >= sizeof(buf)) {
+          to_receive = sizeof(buf);
+        } else {
+          to_receive = file_req.filesize - num_received;
+        }
+        // receive and write to buffer
+        ssize_t received = recv(connfd, buf, to_receive, 0);
+        if (received == 0) {
+          fprintf(stderr, "Connection closed.\n");
+          return (void *)-1;
+        } else if (received == -1) {
+          fprintf(stderr, "recv: %s\n", strerror(errno));
+          close_conn(connfd);
+          printf("Connection closed.\n");
+          return (void *)-1;
+        }
+        // save the written part of buffer to file
+        fwrite(buf, 1, received, file);
+        if (ferror(file)) {
+          fprintf(stderr, "fwrite: %s\n", strerror(errno));
+          close_conn(connfd);
+          printf("Connection closed.\n");
+          return (void *)-1;
+        }
+        num_received += received;
+      }
+
+      // close the file
+      err = fclose(file);
+      if (err) {
+        fprintf(stderr, "fclose: %s\n", strerror(errno));
+        return (void *)-1;
+      }
     }
     free(filename);
   }

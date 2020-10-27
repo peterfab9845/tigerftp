@@ -16,6 +16,7 @@ struct ftp_auth_request {
 
 struct ftp_file_request {
   enum ftp_req_type type;
+  size_t filesize;
   size_t filename_len;
 };
 
