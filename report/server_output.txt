@@ -1,0 +1,498 @@
+$ make run_server
+Now accepting connections.
+Connection opened.
+Successful login by: user
+Connection opened.
+Successful login by: user
+GET down1.txt
+PUT upload1.txt
+GET down2.txt
+Connection closed.
+PUT upload2.txt
+Connection closed.
+Connection opened.
+Connection opened.
+Successful login by: user
+Successful login by: user
+GET down3.txt
+GET down4.txt
+Connection opened.
+Successful login by: user
+GET down5.txt
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Successful login by: user
+Successful login by: user
+Connection opened.
+Connection opened.
+Successful login by: user
+Connection opened.
+GET down8.txt
+GET down10.txt
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+GET down22.txt
+GET down23.txt
+Connection opened.
+Connection opened.
+Connection opened.
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Connection opened.
+Connection opened.
+Successful login by: user
+Successful login by: user
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Connection opened.
+Connection opened.
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Connection opened.
+GET down9.txt
+GET down57.txt
+GET down37.txt
+GET down44.txt
+GET down56.txt
+GET down55.txt
+GET down58.txt
+GET down6.txt
+GET down31.txt
+GET down30.txt
+GET down11.txt
+GET down7.txt
+GET down59.txt
+GET down60.txt
+GET down18.txt
+GET down13.txt
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Successful login by: user
+Successful login by: user
+Connection opened.
+Successful login by: user
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Connection opened.
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+GET down38.txt
+Successful login by: user
+Successful login by: user
+GET down24.txt
+GET down84.txt
+GET down69.txt
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+GET down17.txt
+GET down62.txt
+GET down65.txt
+Successful login by: user
+Successful login by: user
+Successful login by: user
+GET down88.txt
+GET down42.txt
+GET down66.txt
+GET down71.txt
+GET down64.txt
+GET down27.txt
+GET down76.txt
+GET down63.txt
+GET down82.txt
+GET down35.txt
+Successful login by: user
+GET down54.txt
+GET down29.txt
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+GET down95.txt
+GET down96.txt
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+GET down51.txt
+GET down43.txt
+GET down50.txt
+GET down92.txt
+GET down74.txt
+GET down47.txt
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+GET down46.txt
+GET down16.txt
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+Successful login by: user
+GET down39.txt
+GET down77.txt
+GET down73.txt
+GET down68.txt
+GET down90.txt
+GET down32.txt
+GET down67.txt
+GET down15.txt
+GET down87.txt
+GET down34.txt
+GET down25.txt
+GET down28.txt
+GET down86.txt
+GET down75.txt
+GET down21.txt
+GET down48.txt
+GET down53.txt
+GET down52.txt
+GET down78.txt
+GET down79.txt
+GET down99.txt
+GET down83.txt
+GET down45.txt
+GET down72.txt
+GET down41.txt
+GET down91.txt
+GET down80.txt
+GET down36.txt
+GET down61.txt
+GET down98.txt
+GET down26.txt
+GET down40.txt
+GET down70.txt
+GET down33.txt
+GET down89.txt
+GET down97.txt
+GET down93.txt
+GET down94.txt
+GET down49.txt
+GET down12.txt
+GET down19.txt
+GET down20.txt
+GET down85.txt
+GET down81.txt
+GET down14.txt
+PUT upload3.txt
+PUT upload69.txt
+PUT upload43.txt
+PUT upload86.txt
+PUT upload4.txt
+PUT upload8.txt
+PUT upload56.txt
+PUT upload65.txt
+PUT upload95.txt
+PUT upload63.txt
+PUT upload9.txt
+PUT upload40.txt
+PUT upload89.txt
+PUT upload61.txt
+PUT upload99.txt
+PUT upload30.txt
+PUT upload72.txt
+PUT upload71.txt
+PUT upload26.txt
+PUT upload73.txt
+PUT upload66.txt
+PUT upload18.txt
+PUT upload16.txt
+PUT upload76.txt
+PUT upload92.txt
+PUT upload17.txt
+PUT upload87.txt
+PUT upload62.txt
+PUT upload80.txt
+PUT upload93.txt
+PUT upload6.txt
+PUT upload42.txt
+PUT upload51.txt
+PUT upload10.txt
+PUT upload46.txt
+PUT upload39.txt
+PUT upload57.txt
+PUT upload12.txt
+PUT upload60.txt
+PUT upload82.txt
+PUT upload97.txt
+PUT upload90.txt
+PUT upload25.txt
+PUT upload24.txt
+PUT upload5.txt
+PUT upload84.txt
+PUT upload37.txt
+PUT upload13.txt
+PUT upload23.txt
+PUT upload59.txt
+PUT upload55.txt
+PUT upload27.txt
+PUT upload58.txt
+PUT upload29.txt
+PUT upload88.txt
+PUT upload77.txt
+PUT upload11.txt
+PUT upload49.txt
+PUT upload54.txt
+PUT upload38.txt
+PUT upload31.txt
+PUT upload47.txt
+PUT upload53.txt
+PUT upload83.txt
+PUT upload74.txt
+PUT upload78.txt
+PUT upload28.txt
+PUT upload81.txt
+PUT upload20.txt
+PUT upload75.txt
+PUT upload22.txt
+PUT upload35.txt
+PUT upload70.txt
+PUT upload34.txt
+PUT upload91.txt
+PUT upload94.txt
+PUT upload45.txt
+PUT upload96.txt
+PUT upload68.txt
+Connection closed.
+PUT upload79.txt
+PUT upload21.txt
+PUT upload15.txt
+PUT upload32.txt
+PUT upload44.txt
+PUT upload48.txt
+Connection closed.
+PUT upload67.txt
+PUT upload33.txt
+PUT upload85.txt
+PUT upload36.txt
+PUT upload19.txt
+PUT upload41.txt
+PUT upload64.txt
+PUT upload50.txt
+PUT upload98.txt
+PUT upload7.txt
+PUT upload52.txt
+PUT upload14.txt
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+Connection closed.
+^Cmake: *** [Makefile:49: run_server] Interrupt

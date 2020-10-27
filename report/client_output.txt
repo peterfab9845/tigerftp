@@ -1,0 +1,397 @@
+$ make test
+TigerC> Connected successfully.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> Connected successfully.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> Connected successfully.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting
+TigerC> File transfer completed.
+TigerC> Quitting

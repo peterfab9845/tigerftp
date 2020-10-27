@@ -1,0 +1,24 @@
+Script started on 2020-10-26 22:04:40-04:00 [TERM="xterm-256color" TTY="/dev/pts/2" COLUMNS="80" LINES="24"]
+]0;peter@peter-sfx:~/rit/Year4Fall/Data_Comm/projects/proj1[0m[peter@[32mpeter-sfx[0m proj1]$ make run_server[K[K[K[K[K[Kclient
+TigerC> tconnect localghost notenoughargs
+tconnect requires a password.
+TigerC> tconnect localhost  asdf user pass
+getaddrinfo: Name or service not known
+Could not connect to server.
+TigerC> tconnect localhost user pass
+Connected successfully.
+TigerC> tget down2.txt
+File transfer completed.
+TigerC> tget doesn'te        nonexistent.txt
+Server failed to read file.
+Unable to complete get request.
+TigerC> tput upload2.txt
+File transfer completed.
+TigerC> tput nonexistent.txt
+Failed to open specified file for reading.
+Unable to complete put request.
+TigerC> exit
+Quitting
+]0;peter@peter-sfx:~/rit/Year4Fall/Data_Comm/projects/proj1[0m[peter@[32mpeter-sfx[0m proj1]$ exit
+
+Script done on 2020-10-26 22:06:04-04:00 [COMMAND_EXIT_CODE="0"]
